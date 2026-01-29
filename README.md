@@ -1,4 +1,28 @@
-Current Edgecases or things to Consider:
+# SUMMARY of the detections script
+1. The Core Logic: "Strict Boundary" Rules
+The system functions like a security gate. It separates what the camera sees from what the system knows.
+
+Entry (Check-In): If a dish (cup or bowl) is detected inside the sink polygon, it is added to the sink_inventory and a timer starts.
+
+The "Hidden" State (Object Permanence): If a dish is in the inventory but the camera stops seeing it (e.g., it gets covered by another plate), the system does not remove it. It marks the status as COVERED and keeps the timer running.
+
+Exit (Check-Out): A dish is removed from the inventory ONLY if the camera actively sees that specific ID outside the sink polygon (e.g., placed on the counter). Simply disappearing is not enough to be removed.
+
+2. The Tech Pipeline
+Input: Accepts raw video feeds (RTSP, Webcam, or File). No encoding is required, but resizing high-res streams to ~720p is recommended for performance.
+
+Detection: Uses YOLOv8 (Nano) to identify objects frame-by-frame.
+
+Tracking: Uses BoT-SORT to assign unique IDs (e.g., "Plate #42"), ensuring the system tracks individual items across time.
+
+3. Key Constraints & Features
+Duration: The script can run indefinitely (24/7). It uses a "Garbage Collector" to delete "ghost" items that have been hidden for >1 hour to prevent memory bloat.
+
+Alerting: If Current Time - Entry Time > 10 minutes, the status changes to ALERT (Visual Red Box/Text).
+
+Limitations: The "Strict Exit" rule means if a user blocks the camera's view while removing a plate, the system will falsely believe the plate is still in the sink (hidden).
+
+# Current Edgecases or things to Consider:
 
 Putting a small plate in, and then another plate coveres it.
   idea: create a set for plats, bowls, or cups put in the sink, and keep them there UNLESS they are moved (not necessarily just out of frame)
