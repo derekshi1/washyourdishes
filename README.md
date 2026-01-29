@@ -23,8 +23,6 @@
 
 # Current Edgecases or things to Consider:
 
-Putting a small plate in, and then another plate coveres it.
-  idea: create a set for plats, bowls, or cups put in the sink, and keep them there UNLESS they are moved (not necessarily just out of frame)
 
 How to have the camera live feed be cast real time to our detection
 
